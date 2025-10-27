@@ -198,7 +198,7 @@ private readonly GRID_SIZE = 10;
 
 This is a take-home assignment project. While contributions are not expected, the code is open for review and learning.
 
-## 📄 License
+## License
 
 MIT License - Feel free to use this code for learning purposes.
 
