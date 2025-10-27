@@ -4,7 +4,8 @@ A real-time multiplayer web application where players can update cells in a shar
 
 ## AI Tools Disclosure
 
-**This project was developed with assistance from GitHub Copilot and Claude** The AI was used for:
+**This project was developed with assistance from GitHub Copilot and Claude** 
+The AI was used for:
 - Brain-Storming
 - Documentation writing
 - Error Solving
@@ -81,10 +82,6 @@ Client runs on `http://localhost:5173`
 4. After submitting, you'll have a 1-minute cooldown before you can update again
 5. All updates are visible to all connected players in real-time
 6. Use the history timeline to view past states of the grid
-
-## Development Process
-
-This project was built incrementally with proper Git commits showing the development progression.
 
 ## License
 
