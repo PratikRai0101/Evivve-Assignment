@@ -3,12 +3,16 @@
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .grid {
   display: inline-block;
   border: 2px solid #333;
   background: #fff;
+  overflow-x: auto;
 }
 
 .grid-row {
@@ -18,6 +22,8 @@
 .grid-cell {
   width: 50px;
   height: 50px;
+  min-width: 50px;
+  min-height: 50px;
   border: 1px solid #ccc;
   display: flex;
   align-items: center;
@@ -63,6 +69,8 @@
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   min-width: 300px;
+  max-width: 90vw;
+  margin: 0 10px;
 }
 
 .modal h3 {
@@ -122,4 +130,77 @@
 
 .modal-buttons button:last-child:hover {
   background-color: #e0e0e0;
+}
+
+/* Responsive Design for Grid */
+@media (max-width: 768px) {
+  .grid-cell {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    min-height: 45px;
+    font-size: 20px;
+  }
+
+  .modal {
+    padding: 20px;
+    min-width: 280px;
+  }
+
+  .modal h3 {
+    font-size: 1.2rem;
+  }
+
+  .modal input {
+    font-size: 20px;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 580px) {
+  .grid-cell {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 18px;
+  }
+
+  .grid {
+    border: 1px solid #333;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-cell {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    min-height: 35px;
+    font-size: 16px;
+  }
+
+  .modal {
+    padding: 20px 15px;
+    min-width: 250px;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-buttons button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .grid-cell {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    font-size: 14px;
+  }
 }
