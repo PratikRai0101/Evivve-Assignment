@@ -4,7 +4,8 @@ A real-time multiplayer web application where players can interact with a shared
 
 ## AI Tools Disclosure
 
-**This project was developed with assistance from GitHub Copilot and Claude** The AI was used for:
+**This project was developed with assistance from GitHub Copilot and Claude** 
+The AI was used for:
 - Brain-Storming
 - Documentation writing
 - Error Solving
@@ -118,85 +119,16 @@ Open your browser and navigate to `http://localhost:5173`
 
 ## How to Use
 
-1. **Open the Application** - Navigate to `http://localhost:5173` in your browser
-2. **See Online Players** - The player count updates automatically when users connect/disconnect
-3. **Click a Cell** - Click any empty cell in the 10×10 grid
-4. **Enter Character** - A modal will appear - enter any single Unicode character (I have also tried adding Emojis tho it is a bit inconsistent)
-5. **Submit** - Click submit to place your character
-6. **Cooldown Period** - You'll have a 60-second cooldown before you can update again
-7. **Real-time Updates** - Watch as other players update cells in real-time
-8. **View History** - Click "Show History" to see all past updates
-9. **Time Travel** - Click any history entry to view the grid at that point in time
-10. **Back to Present** - Click "Back to Present" to return to the current state
+1. Open the application in your browser
+2. You'll see a 10x10 grid with the number of online players
+3. Click any empty cell to enter a Unicode character
+4. After submitting, you'll have a 1-minute cooldown before you can update again
+5. All updates are visible to all connected players in real-time
+6. Use the history timeline to view past states of the grid
 
-## Key Features Explained
+## Development Process
 
-### Grid State Management
-- Server maintains the authoritative grid state
-- All updates are validated server-side
-- Grid state is synchronized to all connected clients
-
-### Player Restrictions
-- Each player has a cooldown timer after submitting
-- Cooldown is 60 seconds (configurable in `gridManager.ts`)
-- Players can update again after cooldown expires
-- Server enforces restrictions to prevent cheating
-
-### Real-time Communication
-- Socket.IO enables bidirectional real-time communication
-- Events: `gridState`, `cellUpdated`, `playerCount`, `updateStatus`, `historyData`
-- Automatic reconnection handling
-
-### History & Time Travel
-- Every update is recorded with timestamp
-- Updates within 1 second are grouped together
-- Click any history entry to view grid at that moment
-- Server reconstructs historical grid states on-demand
-
-## Architecture
-
-### Backend (Server)
-- **server.ts** - Express server with Socket.IO integration
-- **gridManager.ts** - Core business logic for grid management
-- **types.ts** - Shared TypeScript interfaces
-
-### Frontend (Client)
-- **App.tsx** - Main component with Socket.IO client
-- **Grid.tsx** - Grid visualization and interaction
-- **History.tsx** - Historical updates viewer
-
-
-## 🔧 Configuration
-
-### Server Port
-Edit `server/src/server.ts`:
-```typescript
-const PORT = process.env.PORT || 3001;
-```
-
-### Cooldown Time
-Edit `server/src/gridManager.ts`:
-```typescript
-private readonly COOLDOWN_TIME = 60000; // In milliseconds
-```
-
-### Grid Size
-Edit `server/src/gridManager.ts`:
-```typescript
-private readonly GRID_SIZE = 10;
-```
-
-## Testing
-
-1. Open multiple browser windows/tabs
-2. Connect from different devices on the same network
-3. Test real-time synchronization
-4. Verify cooldown timer functionality
-5. Test history and time-travel features
-
-## Contributing
-
-This is a take-home assignment project. While contributions are not expected, the code is open for review and learning.
+This project was built incrementally with proper Git commits showing the development progression.
 
 ## License
 
