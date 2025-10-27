@@ -1,8 +1,5 @@
 import { GridCell, PlayerData, HistoryEntry, CellUpdate } from './types';
 
-/**
- * Manages the grid state and player interactions
- */
 class GridManager {
   private grid: GridCell[][];
   private players: Map<string, PlayerData>;
@@ -16,9 +13,6 @@ class GridManager {
     this.history = [];
   }
 
-  /**
-   * Initialize an empty 10x10 grid
-   */
   private initializeGrid(): GridCell[][] {
     const grid: GridCell[][] = [];
     for (let i = 0; i < this.GRID_SIZE; i++) {
@@ -34,9 +28,6 @@ class GridManager {
     return grid;
   }
 
-  /**
-   * Add a new player to the game
-   */
   addPlayer(playerId: string): void {
     if (!this.players.has(playerId)) {
       this.players.set(playerId, {
@@ -47,30 +38,20 @@ class GridManager {
     }
   }
 
-  /**
-   * Remove a player from the game
-   */
   removePlayer(playerId: string): void {
     this.players.delete(playerId);
   }
 
-  /**
-   * Get the current number of connected players
-   */
   getPlayerCount(): number {
     return this.players.size;
   }
 
-  /**
-   * Check if a player can update and return their status
-   */
   canPlayerUpdate(playerId: string): { canUpdate: boolean; cooldownUntil: number | null } {
     const player = this.players.get(playerId);
     if (!player) {
       return { canUpdate: false, cooldownUntil: null };
     }
 
-    // Check if cooldown has expired
     if (player.cooldownUntil && Date.now() >= player.cooldownUntil) {
       player.canUpdate = true;
       player.cooldownUntil = null;
@@ -82,23 +63,17 @@ class GridManager {
     };
   }
 
-  /**
-   * Update a cell in the grid
-   */
   updateCell(row: number, col: number, value: string, playerId: string): 
     { success: boolean; error?: string; timestamp?: number } {
     
-    // Validate coordinates
     if (row < 0 || row >= this.GRID_SIZE || col < 0 || col >= this.GRID_SIZE) {
       return { success: false, error: 'Invalid cell coordinates' };
     }
 
-    // Validate value (must be a single character)
     if (!value || value.length !== 1) {
       return { success: false, error: 'Value must be a single character' };
     }
 
-    // Check if player can update
     const playerStatus = this.canPlayerUpdate(playerId);
     if (!playerStatus.canUpdate) {
       const remainingTime = playerStatus.cooldownUntil 
@@ -112,29 +87,24 @@ class GridManager {
 
     const timestamp = Date.now();
 
-    // Update the cell
     this.grid[row][col] = {
       value,
       playerId,
       timestamp
     };
 
-    // Add to history - group updates within 1 second
     const lastEntry = this.history[this.history.length - 1];
     const cellUpdate: CellUpdate = { row, col, value, playerId, timestamp };
     
     if (lastEntry && timestamp - lastEntry.timestamp < 1000) {
-      // Add to existing entry (same second)
       lastEntry.updates.push(cellUpdate);
     } else {
-      // Create new history entry
       this.history.push({
         timestamp,
         updates: [cellUpdate]
       });
     }
 
-    // Update player status - apply cooldown
     const player = this.players.get(playerId);
     if (player) {
       player.canUpdate = false;
@@ -144,27 +114,17 @@ class GridManager {
     return { success: true, timestamp };
   }
 
-  /**
-   * Get the current state of the grid
-   */
   getGrid(): GridCell[][] {
     return this.grid;
   }
 
-  /**
-   * Get the complete history of all updates
-   */
   getHistory(): HistoryEntry[] {
     return this.history;
   }
 
-  /**
-   * Get the grid state at a specific point in time
-   */
   getGridAtTimestamp(timestamp: number): GridCell[][] {
     const historicalGrid = this.initializeGrid();
 
-    // Apply all updates up to the specified timestamp
     for (const entry of this.history) {
       if (entry.timestamp > timestamp) {
         break;

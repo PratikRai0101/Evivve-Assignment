@@ -20,27 +20,23 @@ function App() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [viewingTimestamp, setViewingTimestamp] = useState<number | null>(null);
 
-  // Initialize socket connection
   useEffect(() => {
     const newSocket = io(SOCKET_URL);
     setSocket(newSocket);
 
-    // Listen for grid state
     newSocket.on('gridState', (gridData: GridCell[][]) => {
       setGrid(gridData);
     });
 
-    // Listen for player count updates
     newSocket.on('playerCount', (count: number) => {
       setPlayerCount(count);
     });
 
-    // Listen for update status
+
     newSocket.on('updateStatus', (status: PlayerStatus) => {
       setPlayerStatus(status);
     });
 
-    // Listen for cell updates
     newSocket.on('cellUpdated', (data: {
       row: number;
       col: number;
@@ -57,20 +53,19 @@ function App() {
         };
         return newGrid;
       });
+
+      newSocket.emit('requestHistory');
     });
 
-    // Listen for errors
     newSocket.on('error', (message: string) => {
       setError(message);
       setTimeout(() => setError(''), 3000);
     });
 
-    // Listen for history data
     newSocket.on('historyData', (historyData: HistoryEntry[]) => {
       setHistory(historyData);
     });
 
-    // Request history on connect
     newSocket.emit('requestHistory');
 
     return () => {
@@ -78,7 +73,6 @@ function App() {
     };
   }, []);
 
-  // Cooldown timer
   useEffect(() => {
     if (!playerStatus.cooldownUntil) {
       setCooldownSeconds(0);
@@ -106,11 +100,9 @@ function App() {
     if (!socket) return;
 
     if (timestamp === null) {
-      // Reset to present
       setViewingTimestamp(null);
       socket.emit('requestGrid');
     } else {
-      // View historical state
       setViewingTimestamp(timestamp);
       socket.emit('requestGridAtTime', timestamp);
     }
