@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import Grid from './components/Grid';
-import type { GridCell, PlayerStatus } from './types';
+import History from './components/History';
+import type { GridCell, PlayerStatus, HistoryEntry } from './types';
 import './App.css';
 
 const SOCKET_URL = 'http://localhost:3001';
@@ -16,6 +17,8 @@ function App() {
   });
   const [error, setError] = useState<string>('');
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [viewingTimestamp, setViewingTimestamp] = useState<number | null>(null);
 
   // Initialize socket connection
   useEffect(() => {
@@ -62,6 +65,14 @@ function App() {
       setTimeout(() => setError(''), 3000);
     });
 
+    // Listen for history data
+    newSocket.on('historyData', (historyData: HistoryEntry[]) => {
+      setHistory(historyData);
+    });
+
+    // Request history on connect
+    newSocket.emit('requestHistory');
+
     return () => {
       newSocket.close();
     };
@@ -94,6 +105,20 @@ function App() {
     }
   };
 
+  const handleTimeTravel = (timestamp: number | null) => {
+    if (!socket) return;
+
+    if (timestamp === null) {
+      // Reset to present
+      setViewingTimestamp(null);
+      socket.emit('requestGrid');
+    } else {
+      // View historical state
+      setViewingTimestamp(timestamp);
+      socket.emit('requestGridAtTime', timestamp);
+    }
+  };
+
   return (
     <div className="app">
       <header>
@@ -114,16 +139,28 @@ function App() {
 
       {error && <div className="error-message">{error}</div>}
 
+      {viewingTimestamp && (
+        <div className="time-travel-banner">
+          🕒 Viewing historical state - Click "Back to Present" to return
+        </div>
+      )}
+
       <main>
         {grid.length > 0 ? (
           <Grid 
             grid={grid} 
             onCellClick={handleCellClick}
-            canUpdate={playerStatus.canUpdate}
+            canUpdate={playerStatus.canUpdate && !viewingTimestamp}
           />
         ) : (
           <div className="loading">Loading grid...</div>
         )}
+
+        <History 
+          history={history}
+          onTimeTravel={handleTimeTravel}
+          currentTimestamp={viewingTimestamp}
+        />
       </main>
 
       <footer>

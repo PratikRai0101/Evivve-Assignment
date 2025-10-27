@@ -14,6 +14,11 @@ export interface CellUpdate {
   timestamp: number;
 }
 
+export interface HistoryEntry {
+  timestamp: number;
+  updates: CellUpdate[];
+}
+
 export interface PlayerStatus {
   canUpdate: boolean;
   cooldownUntil: number | null;

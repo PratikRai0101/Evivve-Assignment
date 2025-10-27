@@ -65,6 +65,17 @@ io.on('connection', (socket) => {
     socket.emit('gridState', gridManager.getGrid());
   });
 
+  // Handle history requests
+  socket.on('requestHistory', () => {
+    socket.emit('historyData', gridManager.getHistory());
+  });
+
+  // Handle time-travel requests
+  socket.on('requestGridAtTime', (timestamp: number) => {
+    const historicalGrid = gridManager.getGridAtTimestamp(timestamp);
+    socket.emit('gridState', historicalGrid);
+  });
+
   socket.on('disconnect', () => {
     console.log(`Player disconnected: ${socket.id}`);
     gridManager.removePlayer(socket.id);

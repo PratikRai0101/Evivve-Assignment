@@ -1,4 +1,4 @@
-import { GridCell, PlayerData } from './types';
+import { GridCell, PlayerData, HistoryEntry, CellUpdate } from './types';
 
 /**
  * Manages the grid state and player interactions
@@ -6,12 +6,14 @@ import { GridCell, PlayerData } from './types';
 class GridManager {
   private grid: GridCell[][];
   private players: Map<string, PlayerData>;
+  private history: HistoryEntry[];
   private readonly GRID_SIZE = 10;
   private readonly COOLDOWN_TIME = 60000; // 1 minute in milliseconds
 
   constructor() {
     this.grid = this.initializeGrid();
     this.players = new Map();
+    this.history = [];
   }
 
   /**
@@ -117,6 +119,21 @@ class GridManager {
       timestamp
     };
 
+    // Add to history - group updates within 1 second
+    const lastEntry = this.history[this.history.length - 1];
+    const cellUpdate: CellUpdate = { row, col, value, playerId, timestamp };
+    
+    if (lastEntry && timestamp - lastEntry.timestamp < 1000) {
+      // Add to existing entry (same second)
+      lastEntry.updates.push(cellUpdate);
+    } else {
+      // Create new history entry
+      this.history.push({
+        timestamp,
+        updates: [cellUpdate]
+      });
+    }
+
     // Update player status - apply cooldown
     const player = this.players.get(playerId);
     if (player) {
@@ -132,6 +149,36 @@ class GridManager {
    */
   getGrid(): GridCell[][] {
     return this.grid;
+  }
+
+  /**
+   * Get the complete history of all updates
+   */
+  getHistory(): HistoryEntry[] {
+    return this.history;
+  }
+
+  /**
+   * Get the grid state at a specific point in time
+   */
+  getGridAtTimestamp(timestamp: number): GridCell[][] {
+    const historicalGrid = this.initializeGrid();
+
+    // Apply all updates up to the specified timestamp
+    for (const entry of this.history) {
+      if (entry.timestamp > timestamp) {
+        break;
+      }
+      for (const update of entry.updates) {
+        historicalGrid[update.row][update.col] = {
+          value: update.value,
+          playerId: update.playerId,
+          timestamp: update.timestamp
+        };
+      }
+    }
+
+    return historicalGrid;
   }
 }
 
