@@ -4,7 +4,7 @@ import './Grid.css';
 
 interface GridProps {
   grid: GridCellType[][];
-  onCellClick: (row: number, col: number) => void;
+  onCellClick: (row: number, col: number, value: string) => void;
   canUpdate: boolean;
 }
 
@@ -20,7 +20,7 @@ const Grid = ({ grid, onCellClick, canUpdate }: GridProps) => {
 
   const handleSubmit = () => {
     if (selectedCell && inputValue.length === 1) {
-      onCellClick(selectedCell.row, selectedCell.col);
+      onCellClick(selectedCell.row, selectedCell.col, inputValue);
       setSelectedCell(null);
       setInputValue('');
     }

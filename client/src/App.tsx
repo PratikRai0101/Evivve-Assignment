@@ -96,12 +96,9 @@ function App() {
     return () => clearInterval(interval);
   }, [playerStatus.cooldownUntil]);
 
-  const handleCellClick = (row: number, col: number) => {
+  const handleCellClick = (row: number, col: number, value: string) => {
     if (socket && playerStatus.canUpdate) {
-      const value = prompt('Enter a character:');
-      if (value && value.length === 1) {
-        socket.emit('updateCell', { row, col, value });
-      }
+      socket.emit('updateCell', { row, col, value });
     }
   };
 
