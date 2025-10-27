@@ -5,7 +5,7 @@ import History from './components/History';
 import type { GridCell, PlayerStatus, HistoryEntry } from './types';
 import './App.css';
 
-const SOCKET_URL = 'http://localhost:3001';
+const SOCKET_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
 
 function App() {
   const [socket, setSocket] = useState<Socket | null>(null);
