@@ -2,38 +2,37 @@
 
 A real-time multiplayer web application where players can update cells in a shared 10x10 grid with Unicode characters.
 
-## 🤖 AI Tools Disclosure
+## AI Tools Disclosure
 
-**This project was developed with assistance from GitHub Copilot AI.** The AI was used for:
-- Code suggestions and completions
-- Boilerplate generation
-- Problem-solving assistance
+**This project was developed with assistance from GitHub Copilot and Claude** The AI was used for:
+- Brain-Storming
 - Documentation writing
+- Error Solving
 
-The overall architecture, logic, and implementation decisions were made by the developer with AI as a coding assistant.
+The overall architecture, logic, and implementation decisions were made by me along with some help from Github Copilot.
 
-## 📋 Features
+## Features
 
 ### Core Requirements
-- ✅ 10x10 interactive grid
-- ✅ Real-time updates across all connected players
-- ✅ One-time character submission per player
-- ✅ Live player count display
-- ✅ Shared grid state across all users
+- 10x10 interactive grid
+- Real-time updates across all connected players
+- One-time character submission per player
+- Live player count display
+- Shared grid state across all users
 
 ### Extra Features
-- ⏱️ 1-minute cooldown after submission (then player can update again)
-- 📜 Historical updates viewer (time-travel feature)
-- 🔄 Grouped updates within the same second
+- 1-minute cooldown after submission (then player can update again)
+- Historical updates viewer (time-travel feature)
+- Grouped updates within the same second
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React, TypeScript, Vite
 - **Backend**: Node.js, Express, TypeScript
 - **Real-time**: Socket.IO
 - **Styling**: CSS
 
-## 📦 Project Structure
+## Project Structure
 
 ```
 multiplayer-grid/
@@ -50,7 +49,7 @@ multiplayer-grid/
     └── tsconfig.json
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -74,7 +73,7 @@ npm run dev
 ```
 Client runs on `http://localhost:5173`
 
-## 📝 How to Use
+## How to Use
 
 1. Open the application in your browser
 2. You'll see a 10x10 grid with the number of online players
@@ -83,10 +82,10 @@ Client runs on `http://localhost:5173`
 5. All updates are visible to all connected players in real-time
 6. Use the history timeline to view past states of the grid
 
-## 👨‍💻 Development Process
+## Development Process
 
 This project was built incrementally with proper Git commits showing the development progression.
 
-## 📄 License
+## License
 
 MIT
