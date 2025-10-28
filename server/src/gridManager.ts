@@ -1,11 +1,13 @@
 import { GridCell, PlayerData, HistoryEntry, CellUpdate } from './types';
+import { CONFIG } from './config';
 
 class GridManager {
   private grid: GridCell[][];
   private players: Map<string, PlayerData>;
   private history: HistoryEntry[];
-  private readonly GRID_SIZE = 10;
-  private readonly COOLDOWN_TIME = 60000; // 1 minute in milliseconds
+  private readonly GRID_SIZE = CONFIG.GRID_SIZE;
+  private readonly COOLDOWN_TIME = CONFIG.COOLDOWN_TIME;
+  private readonly USE_COOLDOWN = CONFIG.USE_COOLDOWN;
 
   constructor() {
     this.grid = this.initializeGrid();
@@ -52,7 +54,8 @@ class GridManager {
       return { canUpdate: false, cooldownUntil: null };
     }
 
-    if (player.cooldownUntil && Date.now() >= player.cooldownUntil) {
+    // If cooldown is enabled, check if it has expired
+    if (this.USE_COOLDOWN && player.cooldownUntil && Date.now() >= player.cooldownUntil) {
       player.canUpdate = true;
       player.cooldownUntil = null;
     }
@@ -76,13 +79,24 @@ class GridManager {
 
     const playerStatus = this.canPlayerUpdate(playerId);
     if (!playerStatus.canUpdate) {
-      const remainingTime = playerStatus.cooldownUntil 
-        ? Math.ceil((playerStatus.cooldownUntil - Date.now()) / 1000)
-        : 0;
-      return { 
-        success: false, 
-        error: `You must wait ${remainingTime} seconds before updating again` 
-      };
+      if (this.USE_COOLDOWN && playerStatus.cooldownUntil) {
+        const remainingTime = Math.ceil((playerStatus.cooldownUntil - Date.now()) / 1000);
+        return { 
+          success: false, 
+          error: `You must wait ${remainingTime} seconds before updating again` 
+        };
+      } else {
+        return { 
+          success: false, 
+          error: 'You have already submitted. Each player can only update once.' 
+        };
+      }
+    }
+
+    // Prevent a player from editing the same cell they previously filled.
+    const currentCell = this.grid[row][col];
+    if (currentCell.playerId && currentCell.playerId === playerId) {
+      return { success: false, error: 'You cannot modify a cell you previously filled.' };
     }
 
     const timestamp = Date.now();
@@ -108,7 +122,12 @@ class GridManager {
     const player = this.players.get(playerId);
     if (player) {
       player.canUpdate = false;
-      player.cooldownUntil = timestamp + this.COOLDOWN_TIME;
+      // Only set cooldown if USE_COOLDOWN is enabled
+      if (this.USE_COOLDOWN) {
+        player.cooldownUntil = timestamp + this.COOLDOWN_TIME;
+      } else {
+        player.cooldownUntil = null;
+      }
     }
 
     return { success: true, timestamp };

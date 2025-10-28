@@ -123,6 +123,7 @@ Open your browser and navigate to `http://localhost:5173`
 2. You'll see a 10x10 grid with the number of online players
 3. Click any empty cell to enter a Unicode character
 4. After submitting, you'll have a 1-minute cooldown before you can update again
+    - Note: You cannot modify the exact cell you just filled. After the cooldown expires you may update other empty cells or cells updated by others, but your original filled cell remains protected from edits by you.
 5. All updates are visible to all connected players in real-time
 6. Use the history timeline to view past states of the grid
 

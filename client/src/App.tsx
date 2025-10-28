@@ -82,13 +82,20 @@ function App() {
     const updateCooldown = () => {
       const remaining = Math.max(0, Math.ceil((playerStatus.cooldownUntil! - Date.now()) / 1000));
       setCooldownSeconds(remaining);
+      
+      // When cooldown expires, request updated status from server
+      if (remaining === 0 && socket) {
+        setTimeout(() => {
+          socket.emit('requestStatus');
+        }, 100);
+      }
     };
 
     updateCooldown();
     const interval = setInterval(updateCooldown, 1000);
 
     return () => clearInterval(interval);
-  }, [playerStatus.cooldownUntil]);
+  }, [playerStatus.cooldownUntil, socket]);
 
   const handleCellClick = (row: number, col: number, value: string) => {
     if (socket && playerStatus.canUpdate) {
@@ -119,8 +126,10 @@ function App() {
           <div className={`status ${playerStatus.canUpdate ? 'ready' : 'cooldown'}`}>
             {playerStatus.canUpdate ? (
               <span>✅ Ready to update</span>
-            ) : (
+            ) : cooldownSeconds > 0 ? (
               <span>⏱️ Cooldown: {cooldownSeconds}s</span>
+            ) : (
+              <span>🚫 Already submitted</span>
             )}
           </div>
         </div>

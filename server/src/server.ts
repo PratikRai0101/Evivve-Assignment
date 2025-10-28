@@ -63,6 +63,16 @@ io.on('connection', (socket) => {
 
   socket.on('requestGrid', () => {
     socket.emit('gridState', gridManager.getGrid());
+    
+    // Also send updated player status
+    const playerStatus = gridManager.canPlayerUpdate(socket.id);
+    socket.emit('updateStatus', playerStatus);
+  });
+
+  // Allow client to explicitly request current update status (cooldown/reset)
+  socket.on('requestStatus', () => {
+    const playerStatus = gridManager.canPlayerUpdate(socket.id);
+    socket.emit('updateStatus', playerStatus);
   });
 
   socket.on('requestHistory', () => {
