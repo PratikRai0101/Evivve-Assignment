@@ -96,7 +96,7 @@ class GridManager {
     // Prevent a player from editing the same cell they previously filled.
     const currentCell = this.grid[row][col];
     if (currentCell.playerId && currentCell.playerId === playerId) {
-      return { success: false, error: 'You cannot modify a cell you previously filled.' };
+      return { success: false, error: 'You cannot modify a cell that is previously filled.' };
     }
 
     const timestamp = Date.now();
